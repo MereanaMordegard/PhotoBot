@@ -30,3 +30,19 @@ def process_photo(photo_file):
     processed_file = TEMP_PATH + 'processed_photo.jpg'
     photo.save(processed_file)
     return processed_file
+
+# Функция для обработки видео и добавления водяного знака.
+def process_video(video_file):
+    # Загрузка видео.
+    video = VideoFileClip(video_file)
+
+    # Добавление водяного знака.
+    watermark_text = "@melisad_sosedi"
+    watermarked_video = video.set_duration(video.duration)
+    watermarked_video = watermarked_video.set_position(("right", "bottom")).set_duration(video.duration)
+    watermarked_video = watermarked_video.set_caption(watermark_text)
+
+    # Сохранение обработанного видео.
+    processed_file = TEMP_PATH + 'processed_video.mp4'
+    watermarked_video.write_videofile(processed_file, codec="libx264")
+    return processed_file
