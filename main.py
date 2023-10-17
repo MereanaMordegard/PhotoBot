@@ -75,14 +75,9 @@ def process_media(message):
             video_file.write(file)
         processed_file = process_video(TEMP_PATH + 'video.mp4')
 
-    # Добавляем дату к посту.
-    current_date = datetime.datetime.now().strftime("%d.%m.%Y")
-    post_text = f"{current_date}"
-
     # Отправляем обработанный медиафайл и текст в ответе.
     with open(processed_file, 'rb') as photo:
         bot.send_photo(message.chat.id, photo)
-    bot.send_message(message.chat.id, post_text)
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
