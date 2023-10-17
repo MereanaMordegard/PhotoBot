@@ -7,7 +7,7 @@ import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
-bot = os.getenv('tg_token')
+token = os.getenv('tg_token')
 
 # создание директории для временных файлов, если ее нет.
 TEMP_PATH = 'temp/'
@@ -63,8 +63,21 @@ def process_media(update: Update, context: CallbackContext):
 
     # Добавляем дату к посту.
     current_date = datetime.datetime.now().strftime("%d.%m.%Y")
-    post_text = f"Дата: {current_date}"
+    post_text = f"{current_date}"
 
     # Отправляем обработанный медиафайл и текст в ответе.
     update.message.reply_photo(photo=open(processed_file, 'rb'))
     update.message.reply_text(post_text)
+
+# Функция для запуска бота.
+def main():
+    updater = Updater(token, use_context=True)
+    dp = updater.dispatcher
+
+    dp.add_handler(MessageHandler(Filters.all & (Filters.photo | Filters.video), process_media))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
