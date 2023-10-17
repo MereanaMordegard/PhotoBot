@@ -46,3 +46,25 @@ def process_video(video_file):
     processed_file = TEMP_PATH + 'processed_video.mp4'
     watermarked_video.write_videofile(processed_file, codec="libx264")
     return processed_file
+
+# Функция для обработки сообщений с медиафайлами.
+def process_media(update: Update, context: CallbackContext):
+    message = update.message
+    if message.photo:
+        # Если сообщение содержит фотографию.
+        file = message.photo[-1].get_file()
+        file.download(TEMP_PATH + 'photo.jpg')
+        processed_file = process_photo(TEMP_PATH + 'photo.jpg')
+    elif message.video:
+        # Если сообщение содержит видео.
+        file = message.video.get_file()
+        file.download(TEMP_PATH + 'video.mp4')
+        processed_file = process_video(TEMP_PATH + 'video.mp4')
+
+    # Добавляем дату к посту.
+    current_date = datetime.datetime.now().strftime("%d.%m.%Y")
+    post_text = f"Дата: {current_date}"
+
+    # Отправляем обработанный медиафайл и текст в ответе.
+    update.message.reply_photo(photo=open(processed_file, 'rb'))
+    update.message.reply_text(post_text)
